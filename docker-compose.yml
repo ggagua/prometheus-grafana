@@ -1,0 +1,44 @@
+---
+volumes:
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+services:
+  python_app:
+    build: .
+    ports:
+      - "8000:8000"
+    networks:
+      - monitoring
+    command: [ "python", "/app/prometheus_metrics.py" ]
+  prometheus:
+    image: docker.io/prom/prometheus:v3.1.0
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    command: "--config.file=/etc/prometheus/prometheus.yaml"
+    volumes:
+      - ./config/prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
+      - prometheus-data:/prometheus
+    restart: unless-stopped
+    networks:
+      - monitoring
+
+  grafana:
+      image: grafana/grafana:latest
+      container_name: grafana
+      ports:
+        - 3000:3000
+      environment:
+        - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER}
+        - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+      volumes:
+        - grafana-data:/var/lib/grafana
+      restart: unless-stopped
+      networks:
+        - monitoring
+
+networks:
+  monitoring:
+    driver: bridge
