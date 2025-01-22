@@ -1,4 +1,4 @@
-# prometheus-grafana
+# Prometheus & Grafana
 
 **Prometheus** და **Grafana** მონიტორინგის სისტემების ინსტალაცია Docker-ით.
 ვიყენებ mocking-ს(რეალურ დატაზე არ ხდება მუშაობა, რამდენიმე პითონის სკრიპტით ვაგენერირებ random data-ს.)
